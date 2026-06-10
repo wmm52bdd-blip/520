@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>粤资助·云智通</title>
+<style>
+    *{margin:0;padding:0;box-sizing:border-box;font-family:"Microsoft YaHei",sans-serif}
+    body{background:#f4f7fa}
+    .header{background:#0052D9;color:white;padding:20px;text-align:center}
+    .nav{display:flex;justify-content:center;gap:10px;background:white;box-shadow:0 1px 4px #ddd;padding:14px;flex-wrap:wrap}
+    .nav button{padding:10px 16px;border:none;background:#0052D9;color:white;border-radius:8px;cursor:pointer}
+    .nav button:hover{background:#003a9c}
+    .page{max-width:960px;margin:30px auto;padding:0 20px;display:none}
+    .page.active{display:block}
+    .card{background:white;border-radius:12px;padding:24px;box-shadow:0 2px 10px rgba(0,0,0,0.05);margin-bottom:20px}
+    .card h3{color:#0052D9;margin-bottom:14px}
+    .card p{line-height:1.8;margin-bottom:10px}
+    .policy-item{padding:15px;background:#f8f9fa;margin-bottom:10px;border-radius:8px;cursor:pointer}
+    .policy-content{display:none;padding:16px;background:#fff;border-top:1px solid #eee;margin-top:10px}
+    .modal{display:none;position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.5);z-index:999}
+    .modal-box{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:550px;background:white;padding:30px;border-radius:12px;max-height:80vh;overflow-y:auto}
+    .modal-box h4{color:#0052D9;margin-bottom:10px}
+    input,textarea,select{width:100%;padding:12px;border:1px solid #ccc;border-radius:8px;margin-bottom:14px}
+    .btn{background:#0052D9;color:white;padding:12px;border:none;border-radius:8px;width:100%;cursor:pointer;margin-top:10px}
+    .result{margin-top:18px;padding:16px;border-radius:8px;display:none;line-height:1.7;background:#e8f3ff}
+    .close{margin-top:20px;padding:10px 20px;background:#0052D9;color:white;border:none;border-radius:8px;cursor:pointer}
+    /* 政策讲解样式 */
+    .video-card{width:100%;aspect-ratio:16/9;border-radius:12px;overflow:hidden;margin:20px 0;border:1px solid #eee;position:relative}
+    .video-card video{width:100%;height:100%;object-fit:contain;border:none;outline:none;background:#000}
+    .video-card:-webkit-full-screen {width:100%;height:100%;border-radius:0}
+    .video-card:-moz-full-screen {width:100%;height:100%;border-radius:0}
+    .video-card:-ms-fullscreen {width:100%;height:100%;border-radius:0}
+    .video-card:fullscreen {width:100%;height:100%;border-radius:0}
+    .video-card:-webkit-full-screen .replace-btn,
+    .video-card:-moz-full-screen .replace-btn,
+    .video-card:-ms-fullscreen .replace-btn,
+    .video-card:fullscreen .replace-btn{display:none}
+    .video-list{display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-top:20px}
+    .replace-btn{position:absolute;top:10px;right:10px;padding:6px 12px;background:rgba(0,82,217,0.8);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;z-index:10}
+    .replace-btn:hover{background:#0052D9}
+    .fullscreen-btn{position:absolute;top:10px;right:80px;padding:6px 12px;background:rgba(0,82,217,0.8);color:white;border:none;border-radius:6px;cursor:pointer;font-size:12px;z-index:10}
+    .fullscreen-btn:hover{background:#0052D9}
+    .file-input{display:none}
+    @media (max-width:768px){.video-list{grid-template-columns:1fr}}
+    .video-item{background:#f8f9fa;padding:15px;border-radius:8px;text-align:center}
+    .video-item h4{color:#0052D9;margin-bottom:10px;font-size:16px}
+</style>
+</head>
+<body>
+<div class="header">
+    <h1>粤资助·云智通</h1>
+    <p>广东省全学段学生资助智能服务平台（2026年现行政策）</p>
+    <p>广交职院“助人为乐”实践队研发</p>
+</div>
+<div class="nav">
+    <button onclick="go('home')">首页</button>
+    <button onclick="go('policy')">政策云库</button>
+    <button onclick="go('check')">智能自测</button>
+    <button onclick="go('video')">政策讲解</button>
+    <button onclick="go('mental')">心理健康</button>
+</div>
+<!-- 首页 -->
+<div id="home" class="page active">
+    <div class="card">
+        <h3>平台介绍</h3>
+        <p>本平台依据广东省2026年最新学生资助政策打造，覆盖学前教育、义务教育、普通高中、中职、本专科、研究生全学段。</p>
+        <p>平台全面展示各类资助项目的申请条件、资助标准、评定时间、评定流程、材料准备与注意事项，同时提供资格自测、政策讲解等服务，为广大学生与家长提供权威、清晰、一站式的资助政策查询与智能咨询服务。</p>
+    </div>
+</div>
+<!-- 政策云库 -->
+<div id="policy" class="page">
+    <div class="card">
+        <h3>全学段学生资助政策体系（2026年现行）</h3>
+        <div class="policy-item" onclick="toggle('qianshui')">
+            <div>📘 学前教育资助</div>
+            <div id="qianshui" class="policy-content"><p><strong>资助对象：</strong>普惠性幼儿园家庭经济困难儿童、孤儿、残疾儿童</p><p><strong>资助标准：</strong>1000元/生/年</p><p><strong>评定时间：</strong>每年秋季学期9-10月集中评定，春季学期3-4月补报复核</p><p><strong>评定条件：</strong>1.在经审批的公办/普惠性民办幼儿园就读；2.脱贫家庭、低保家庭、特困供养、孤儿、事实无人抚养、残疾儿童，或因病因灾因意外造成家庭经济困难儿童</p><p><strong>评定流程：</strong>1.家长/监护人提交申请；2.幼儿园初审并校内公示；3.报属地教育主管部门审核备案；4.确定资助名单并发放资金</p><p><strong>材料准备：</strong>1.学前教育资助申请表；2.幼儿及监护人户口本、身份证；3.家庭经济困难相关证明（低保证、特困证、脱贫证明、残疾证、孤儿证明等）；4.幼儿园就读证明</p><p><strong>注意事项：</strong>需提供家庭困难相关证明材料，材料真实有效，公示无异议后方可认定</p></div>
+        </div>
+        <div class="policy-item" onclick="toggle('yiwu')">
+            <div>📘 义务教育阶段资助</div>
+            <div id="yiwu" class="policy-content"><p><strong>资助内容：</strong>免学杂费、免费提供教科书，寄宿生生活补助，营养改善计划</p><p><strong>资助标准：</strong>寄宿生补助（小学1000元/年，初中1250元/年）；营养改善计划4元/天</p><p><strong>评定时间：</strong>秋季学期9-10月统一审核认定，春季学期3-4月动态调整、补发资助</p><p><strong>评定条件：</strong>1.在校在籍义务教育阶段学生；2.脱贫家庭、低保、特困供养、孤儿、事实无人抚养、残疾学生，或家庭突发重大变故、重病、灾害等造成经济困难的学生</p><p><strong>评定流程：</strong>1.学生/家长向学校提交申请；2.班级摸底、班主任初审；3.学校评审小组评审并校内公示；4.报属地教育局审核备案；5.落实免补政策、发放资助资金</p><p><strong>材料准备：</strong>1.义务教育家庭经济困难学生资助申请表；2.户口本、监护人身份证；3.家庭经济困难证明（低保证、特困证、脱贫证明、残疾证、重大疾病诊断书、受灾证明等）；4.在校就读证明</p><p><strong>注意事项：</strong>免学杂费、教科书为普惠性政策，生活补助需按困难等级评定，公示期不少于5个工作日</p></div>
+        </div>
+        <div class="policy-item" onclick="toggle('pugao')">
+            <div>📘 普通高中资助</div>
+            <div id="pugao" class="policy-content"><p><strong>资助内容：</strong>国家助学金、免学费政策</p><p><strong>资助标准：</strong>国家助学金1000、2000、3000元/年分档发放；免学费覆盖符合条件困难学生</p><p><strong>评定时间：</strong>秋季9—10月集中评定，春季仅针对新增困难学生动态增补，不全面认定</p><p><strong>评定条件：</strong>1.具有普通高中正式学籍的在校生；2.家庭经济困难（脱贫、低保、特困、残疾、孤儿等）；3.品行良好、遵守校纪校规、学习态度端正</p><p><strong>评定流程：</strong>1.学生个人提交申请；2.班级评议、班主任初审；3.学校资助评审小组审核；4.校内公示无异议后报教育部门审批备案；5.发放资助资金、落实免学费</p><p><strong>材料准备：</strong>1.普通高中国家助学金/免学费申请表；2.学生身份证、户口本；3.家庭经济困难相关证明材料；4.在校表现证明</p><p style="color:#0052D9;font-weight:bold" onclick="openPg()">查看完整详情</p></div>
+        </div>
+        <div class="policy-item" onclick="toggle('zhongzhi')">
+            <div>📘 中职教育资助</div>
+            <div id="zhongzhi" class="policy-content"><p><strong>资助内容：</strong>国家助学金、免学费、国家奖学金</p><p><strong>资助标准：</strong>国家助学金2000元/年（一、二年级）；全日制在校生全部免学费；国家奖学金6000元/年</p><p><strong>评定时间：</strong>秋季9-10月集中申请评定，春季3-4月针对新增困难学生动态增补</p><p><strong>评定条件：</strong>1.全日制正式学籍中职在校生（助学金限一、二年级）；2.助学金：涉农专业学生或家庭经济困难学生；3.奖学金：品学兼优、综合表现突出；4.在校表现良好、遵守纪律、学籍有效</p><p><strong>评定流程：</strong>1.学生向学校提交申请及材料；2.班级初审、学校资助部门审核；3.校内公示无异议后报教育/人社部门审批；4.确定资助名单并发放资金</p><p><strong>材料准备：</strong>1.中职助学金/免学费/奖学金申请表；2.学生身份证、户口本；3.家庭经济困难证明材料（助学金）；4.学籍证明、在校成绩单及表现证明（奖学金）</p><p style="color:#0052D9;font-weight:bold" onclick="openZz()">查看完整详情</p></div>
+        </div>
+        <div class="policy-item" onclick="toggle('benzhuan')">
+            <div>✅ 本专科生资助体系（完整官方版）</div>
+            <div id="benzhuan" class="policy-content"><p><strong>1. 国家奖学金：</strong>10000元/年，奖励特别优秀学生</p><p><strong>2. 国家励志奖学金：</strong>6000元/年，品学兼优困难生</p><p><strong>3. 国家助学金：</strong>平均3700元/年，资助困难学生</p><p><strong>4. 国家助学贷款：</strong>最高20000元/年，在校免息</p><p><strong>5. 绿色通道、入伍资助、基层就业补偿等</strong></p><p><strong>统一评定时间：</strong>秋季9-11月集中评定，春季3-4月助学金专项增补（漏评、新增困难均可申请）；助学贷款暑假至开学初期办理</p><p><strong>统一评定条件：</strong>1.全日制正式学籍本专科在校生；2.助学金/励志奖学金：家庭经济困难、生活简朴；3.奖学金：学业成绩优异、综合表现突出；4.遵守校纪校规、无违纪记录</p><p><strong>统一评定流程：</strong>1.学生线上/线下提交申请及材料；2.班级评议、学院初审；3.学校资助管理中心审核；4.校内公示无异议后报省级教育部门备案；5.发放资助资金/办理贷款</p><p><strong>通用材料准备：</strong>1.家庭经济困难学生认定申请表；2.身份证、户口本；3.家庭经济困难相关证明（低保证、特困证、脱贫证明等）；4.成绩单、获奖证明（奖学金/励志奖学金）</p><p style="color:#0052D9;font-weight:bold" onclick="openZk()">国家助学金完整政策</p><p style="color:#0052D9;font-weight:bold" onclick="openLoan()">国家助学贷款完整政策</p></div>
+        </div>
+        <div class="policy-item" onclick="toggle('yanjiusheng')">
+            <div>📘 研究生资助</div>
+            <div id="yanjiusheng" class="policy-content"><p><strong>资助内容：</strong>国家奖学金、国家助学金、学业奖学金、三助一辅岗位补助、国家助学贷款等</p><p><strong>资助标准：</strong>国家奖学金20000元/年；国家助学金不低于6000元/年；学业奖学金分档发放（院校自定）；三助一辅岗位补助按月发放</p><p><strong>评定时间：</strong>每年9-12月集中评定各类奖学金、助学金，三助一辅岗位按学期认定，助学贷款暑假至开学初期办理</p><p><strong>评定条件：</strong>1.全日制正式学籍研究生；2.品行端正、学业合格、无违纪记录；3.助学金：家庭经济困难学生；4.奖学金：科研能力突出、学业成绩优异；5.三助一辅：具备相应岗位工作能力</p><p><strong>评定流程：</strong>1.学生个人提交申请及佐证材料；2.导师推荐、学院评审小组审核评议；3.学校资助管理中心审定并校内公示；4.报上级部门备案后发放资助资金/落实岗位</p><p><strong>材料准备：</strong>1.研究生资助申请表（按类型填报）；2.身份证、学籍证明；3.家庭经济困难证明材料（助学金）；4.成绩单、科研成果、获奖证明（奖学金）；5.个人能力证明（三助一辅岗位）</p><p><strong>注意事项：</strong>学业奖学金、三助一辅岗位评定标准由各高校自主制定，具体以就读院校通知为准</p></div>
+        </div>
+    </div>
+</div>
+<!-- 智能资格自测 -->
+<div id="check" class="page">
+    <div class="card">
+        <h3>智能资格自测（2026年现行政策，所有项必填）</h3>
+        <p>按照广东省2026年家庭经济困难认定标准，请完整填写以下信息：</p>
+        <p><strong>1. 家庭年人均收入（元）</strong></p>
+        <input type="number" id="income" placeholder="请输入数字，如：8000" min="0">
+        <p><strong>2. 本人或家人是否患重疾（广东省资助政策认可类型）</strong></p>
+        <select id="seriousDisease"><option value="">请选择</option><option value="是">是</option><option value="否">否</option></select>
+        <p style="color:#666;font-size:12px;margin:-10px 0 14px 0">💡 政策认可重疾类型：恶性肿瘤、尿毒症、器官移植、白血病、严重心脏病、严重肝病、重度精神疾病、严重脑血管疾病等</p>
+        <p><strong>3. 持有贫困证明材料类型（可多选，按住Ctrl键选择）</strong></p>
+        <select id="povertyMaterial" multiple size="5"><option value="">请选择（至少选1项，无则选"无相关证明"）</option><option value="低保证">低保证</option><option value="特困人员救助供养证">特困人员救助供养证</option><option value="脱贫家庭证明">脱贫家庭证明（原建档立卡）</option><option value="事实无人抚养儿童证明">事实无人抚养儿童证明</option><option value="残疾证">残疾证（本人或主要家庭成员）</option><option value="孤儿证明">孤儿证明</option><option value="重大疾病诊断书">重大疾病诊断书</option><option value="受灾证明">受灾证明</option><option value="无相关证明">无相关证明</option></select>
+        <button class="btn" onclick="checkLevel()">开始自测</button>
+        <div id="result" class="result"></div>
+    </div>
+</div>
+<!-- 政策讲解模块（视频不自动播放，第一帧自动成为封面） -->
+<div id="video" class="page">
+    <div class="card">
+        <h3>政策讲解</h3>
+        <div class="module-desc" id="videoModuleDesc" ondblclick="editWithPwd('videoModuleDesc')">本板块通过视频讲解国家助学金、国家奖学金、国家助学贷款的<strong>申请流程、认定条件、材料准备</strong>等核心内容，全程通俗易懂，手把手教你申请资助！</div>
+        <div class="video-card" id="videoCard1" style="position:relative; margin:20px 0">
+            <button class="fullscreen-btn" onclick="toggleFullscreen('videoCard1')" style="position:absolute; top:10px; left:10px;">全屏播放</button>
+            <button class="replace-btn" onclick="showPwdModal('file1')" style="position:absolute; top:10px; left:110px;">更换视频</button>
+            <input type="file" class="file-input" id="file1" accept="video/mp4" onchange="replaceVideo(this, 'video1')" style="display:none">
+            <video id="video1" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video>
+        </div>
+        <div class="video-desc" id="videoDesc1" ondblclick="editWithPwd('videoDesc1')" style="margin:10px 0; line-height:1.6">资助政策总览：全面讲解广东省全学段学生资助体系、申请入口、认定标准与整体流程，快速掌握资助核心要点。</div>
+        <div class="video-list">
+            <div class="video-item"><h4 id="videoTitle2" ondblclick="editWithPwd('videoTitle2')">国家助学金申请流程</h4><div class="video-card" id="videoCard2" style="position:relative"><button class="fullscreen-btn" onclick="toggleFullscreen('videoCard2')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('file2')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="file2" accept="video/mp4" onchange="replaceVideo(this, 'video2')" style="display:none"><video id="video2" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="videoDesc2" ondblclick="editWithPwd('videoDesc2')" style="margin:10px 0; line-height:1.6">详细讲解国家助学金的申请条件、认定流程、分档标准、材料准备与发放时间，手把手教你完成申请。</div></div>
+            <div class="video-item"><h4 id="videoTitle3" ondblclick="editWithPwd('videoTitle3')">国家奖学金申请流程</h4><div class="video-card" id="videoCard3" style="position:relative"><button class="fullscreen-btn" onclick="toggleFullscreen('videoCard3')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('file3')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="file3" accept="video/mp4" onchange="replaceVideo(this, 'video3')" style="display:none"><video id="video3" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="videoDesc3" ondblclick="editWithPwd('videoDesc3')" style="margin:10px 0; line-height:1.6">讲解国家奖学金申请条件、评选标准、材料准备、申报流程与注意事项，助力优秀学生成功申报。</div></div>
+            <div class="video-item"><h4 id="videoTitle4" ondblclick="editWithPwd('videoTitle4')">国家助学贷款申请流程</h4><div class="video-card" id="videoCard4" style="position:relative"><button class="fullscreen-btn" onclick="toggleFullscreen('videoCard4')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('file4')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="file4" accept="video/mp4" onchange="replaceVideo(this, 'video4')" style="display:none"><video id="video4" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="videoDesc4" ondblclick="editWithPwd('videoDesc4')" style="margin:10px 0; line-height:1.6">讲解国家助学贷款申请条件、办理渠道、额度标准、贴息政策、还款流程与常见问题解答。</div></div>
+        </div>
+        <p style="margin-top:20px;color:#666;font-size:14px">💡 支持上传小于50MB的MP4视频，更换后视频自动保存至浏览器数据库，刷新页面不会丢失。视频不会自动播放，且视频的第一个画面会自动作为封面展示。</p>
+    </div>
+</div>
+<!-- 心理健康模块（视频不自动播放，第一帧自动成为封面） -->
+<div id="mental" class="page">
+    <div class="card">
+        <h3>心理健康</h3>
+        <div class="module-desc" id="mentalModuleDesc" ondblclick="editWithPwd('mentalModuleDesc')">本板块聚焦学生成长关键时期心理健康需求，涵盖<strong>学业压力疏导、情绪管理、人际交往</strong>等核心内容，为全学段学生的身心健康与全面发展筑牢心理基础！</div>
+        <div class="video-card" id="mentalCard1" style="position:relative; margin:20px 0"><button class="fullscreen-btn" onclick="toggleFullscreen('mentalCard1')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('mentalFile1')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="mentalFile1" accept="video/mp4" onchange="replaceVideo(this, 'mentalVideo1')" style="display:none"><video id="mentalVideo1" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="mentalDesc1" ondblclick="editWithPwd('mentalDesc1')" style="margin:10px 0; line-height:1.6">心理健康总览：介绍心理健康的重要性、常见心理问题识别方法，以及寻求心理帮助的正规渠道，帮助学生树立正确的心理健康观念。</div>
+        <div class="video-list">
+            <div class="video-item"><h4 id="mentalTitle2" ondblclick="editWithPwd('mentalTitle2')">青少年常见心理问题</h4><div class="video-card" id="mentalCard2" style="position:relative"><button class="fullscreen-btn" onclick="toggleFullscreen('mentalCard2')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('mentalFile2')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="mentalFile2" accept="video/mp4" onchange="replaceVideo(this, 'mentalVideo2')" style="display:none"><video id="mentalVideo2" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="mentalDesc2" ondblclick="editWithPwd('mentalDesc2')" style="margin:10px 0; line-height:1.6">解析青少年成长中常见的焦虑、抑郁、自卑等心理问题，帮助学生识别自身情绪状态，及时发现并关注心理健康信号。</div></div>
+            <div class="video-item"><h4 id="mentalTitle3" ondblclick="editWithPwd('mentalTitle3')">压力与情绪的交织</h4><div class="video-card" id="mentalCard3" style="position:relative"><button class="fullscreen-btn" onclick="toggleFullscreen('mentalCard3')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('mentalFile3')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="mentalFile3" accept="video/mp4" onchange="replaceVideo(this, 'mentalVideo3')" style="display:none"><video id="mentalVideo3" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="mentalDesc3" ondblclick="editWithPwd('mentalDesc3')" style="margin:10px 0; line-height:1.6">讲解学业压力、人际压力与情绪波动的关联，教授呼吸调节、正念冥想等实用技巧，帮助学生有效缓解压力、稳定情绪。</div></div>
+            <div class="video-item"><h4 id="mentalTitle4" ondblclick="editWithPwd('mentalTitle4')">我们一直在路上</h4><div class="video-card" id="mentalCard4" style="position:relative"><button class="fullscreen-btn" onclick="toggleFullscreen('mentalCard4')" style="position:absolute; top:10px; left:10px;">全屏播放</button><button class="replace-btn" onclick="showPwdModal('mentalFile4')" style="position:absolute; top:10px; left:110px;">更换视频</button><input type="file" class="file-input" id="mentalFile4" accept="video/mp4" onchange="replaceVideo(this, 'mentalVideo4')" style="display:none"><video id="mentalVideo4" controls preload="metadata" playsinline style="width:100%; border-radius:8px"></video></div><div class="video-desc" id="mentalDesc4" ondblclick="editWithPwd('mentalDesc4')" style="margin:10px 0; line-height:1.6">传递温暖的心理关怀理念，介绍校园心理求助渠道与资源，鼓励学生主动寻求帮助，共同守护心理健康成长。</div></div>
+        </div>
+        <p style="margin-top:20px;color:#666;font-size:14px">💡 支持上传小于50MB的MP4视频，更换后视频自动保存至浏览器数据库，刷新页面不会丢失。视频不会自动播放，且视频的第一个画面会自动作为封面展示。</p>
+    </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = "ZRWL+ly";
+
+// ---------- IndexedDB 视频持久化（支持最大50MB）----------
+const DB_NAME = "VideoDB";
+const STORE_NAME = "videos";
+let dbPromise = null;
+
+function openDB() {
+    if (dbPromise) return dbPromise;
+    dbPromise = new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onerror = () => reject(request.error);
+        request.onsuccess = () => resolve(request.result);
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains(STORE_NAME)) {
+                db.createObjectStore(STORE_NAME);
+            }
+        };
+    });
+    return dbPromise;
+}
+
+async function saveVideoToDB(videoId, blob) {
+    const db = await openDB();
+    return new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_NAME, "readwrite");
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.put(blob, videoId);
+        request.onsuccess = () => resolve();
+        request.onerror = () => reject(request.error);
+    });
+}
+
+async function getVideoFromDB(videoId) {
+    const db = await openDB();
+    return new Promise((resolve) => {
+        const tx = db.transaction(STORE_NAME, "readonly");
+        const store = tx.objectStore(STORE_NAME);
+        const request = store.get(videoId);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+    });
+}
+
+// 提取视频第一帧作为封面（并移除原有poster）
+async function setVideoFirstFrameAsPoster(videoElement) {
+    if (!videoElement) return;
+    // 如果已经有封面处理标志，避免重复绑定
+    if (videoElement._firstFrameProcessed) return;
+    // 等待元数据加载完成
+    const handleLoadedMetadata = () => {
+        // 跳转到第一帧（0秒）
+        videoElement.currentTime = 0;
+        const handleSeeked = () => {
+            // 创建一个canvas截取当前帧
+            const canvas = document.createElement('canvas');
+            canvas.width = videoElement.videoWidth;
+            canvas.height = videoElement.videoHeight;
+            const ctx = canvas.getContext('2d');
+            if (ctx && videoElement.videoWidth > 0) {
+                ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+                const posterDataUrl = canvas.toDataURL('image/jpeg');
+                videoElement.poster = posterDataUrl;
+            }
+            // 清理事件，恢复currentTime为0（不影响用户体验）
+            videoElement.currentTime = 0;
+            videoElement.removeEventListener('seeked', handleSeeked);
+            videoElement.removeEventListener('loadedmetadata', handleLoadedMetadata);
+            videoElement._firstFrameProcessed = true;
+        };
+        videoElement.addEventListener('seeked', handleSeeked, { once: true });
+        // 如果currentTime已经是0，seeked可能不会触发，手动触发
+        if (videoElement.currentTime === 0) {
+            // 已经处于0，直接调用
+            handleSeeked();
+        }
+    };
+    // 如果视频已经加载足够，直接尝试
+    if (videoElement.readyState >= 1) {
+        handleLoadedMetadata();
+    } else {
+        videoElement.addEventListener('loadedmetadata', handleLoadedMetadata, { once: true });
+    }
+}
+
+// 恢复单个视频（从IndexedDB加载，并设置第一帧封面）
+async function restoreVideo(videoId) {
+    const videoEl = document.getElementById(videoId);
+    if (!videoEl) return;
+    const blob = await getVideoFromDB(videoId);
+    if (blob && blob.size > 0) {
+        const oldUrl = videoEl.src;
+        if (oldUrl && oldUrl.startsWith('blob:')) URL.revokeObjectURL(oldUrl);
+        const newUrl = URL.createObjectURL(blob);
+        videoEl.src = newUrl;
+        videoEl.load();          // 加载但不自动播放
+        videoEl.autoplay = false;
+        // 加载完成后提取第一帧
+        videoEl.addEventListener('loadeddata', () => setVideoFirstFrameAsPoster(videoEl), { once: true });
+    } else {
+        // 没有存储的视频，使用默认空src，但仍尝试提取第一帧（无src则忽略）
+        videoEl.src = "";
+    }
+}
+
+// 替换视频核心逻辑（支持小于50MB，不自动播放，并设置第一帧封面）
+async function replaceVideo(input, videoId) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/mp4')) {
+        alert("仅支持MP4视频格式！");
+        return;
+    }
+    if (file.size > 50 * 1024 * 1024) {
+        alert("视频大小超过50MB，请压缩后重新上传！");
+        return;
+    }
+    try {
+        const blob = file.slice(0, file.size, file.type);
+        await saveVideoToDB(videoId, blob);
+        const videoEl = document.getElementById(videoId);
+        if (videoEl) {
+            const oldUrl = videoEl.src;
+            if (oldUrl && oldUrl.startsWith('blob:')) URL.revokeObjectURL(oldUrl);
+            const newUrl = URL.createObjectURL(blob);
+            videoEl.src = newUrl;
+            videoEl.load();
+            videoEl.autoplay = false;
+            // 重置第一帧处理标志，重新提取封面
+            videoEl._firstFrameProcessed = false;
+            videoEl.addEventListener('loadeddata', () => setVideoFirstFrameAsPoster(videoEl), { once: true });
+        }
+        alert("视频更换成功！已保存至本地数据库，刷新页面不会丢失，视频第一帧已自动设为封面。");
+    } catch (err) {
+        console.error(err);
+        alert("保存失败，可能是浏览器存储限制，请稍后重试。");
+    }
+}
+
+// 初始化所有视频：清除原有poster，加载存储视频，并设置第一帧封面
+async function initAllVideos() {
+    const allVideoIds = ['video1','video2','video3','video4','mentalVideo1','mentalVideo2','mentalVideo3','mentalVideo4'];
+    for (const vid of allVideoIds) {
+        await restoreVideo(vid);
+    }
+}
+
+// 原有功能：页面切换、展开政策、自测等
+function go(pageId) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById(pageId).classList.add('active');
+}
+function toggle(id) {
+    const el = document.getElementById(id);
+    el.style.display = el.style.display === 'block' ? 'none' : 'block';
+}
+function checkLevel() {
+    const income = document.getElementById('income').value.trim();
+    const seriousDisease = document.getElementById('seriousDisease').value;
+    const povertyMaterial = Array.from(document.getElementById('povertyMaterial').selectedOptions).map(opt => opt.value);
+    if (!income || !seriousDisease || povertyMaterial.length === 0 || povertyMaterial.includes("")) { alert("请完整填写所有必填项！"); return; }
+    const incomeNum = Number(income);
+    const hasHardshipProof = povertyMaterial.some(item => item && item !== "无相关证明");
+    const hasSeriousDisease = seriousDisease === "是";
+    let resultText = "";
+    if (hasHardshipProof || hasSeriousDisease || incomeNum < 8000) {
+        resultText = `<strong>✅ 认定结果：符合家庭经济困难资助条件</strong><br/>根据2026年广东省学生资助政策，你/你的家庭满足以下认定依据：<br/>${hasHardshipProof ? "1. 持有有效贫困证明材料；<br/>" : ""}${hasSeriousDisease ? "2. 本人/家庭成员患政策认可的重大疾病；<br/>" : ""}${incomeNum < 8000 ? `3. 家庭年人均收入（${income}元）低于广东省困难认定基准线；<br/>` : ""}<strong>建议申请对应学段资助项目：</strong>可按流程提交申请，准备相关证明材料后向学校资助部门申报。`;
+    } else if (incomeNum >= 8000 && incomeNum < 15000) {
+        resultText = `<strong>⚠️ 认定结果：需补充佐证材料</strong><br/>家庭年人均收入（${income}元）处于临界区间，暂无直接认定的贫困证明/重疾情况，建议：<br/>1. 补充家庭支出凭证（如医疗、教育大额支出）；<br/>2. 向学校提交《家庭经济困难认定申请表》并说明特殊情况；<br/>3. 参与学校民主评议环节，由评审小组综合认定。`;
+    } else {
+        resultText = `<strong>❌ 认定结果：暂不符合困难资助条件</strong><br/>家庭年人均收入（${income}元）高于广东省2026年困难认定基准线，且无重疾/贫困证明等特殊情况，暂不满足资助申请条件。<br/>提示：若后续家庭经济状况发生重大变化（如突发灾害、重大疾病等），可重新申请认定。`;
+    }
+    const resultEl = document.getElementById('result');
+    resultEl.innerHTML = resultText;
+    resultEl.style.display = 'block';
+}
+function openPg() { document.getElementById('pgModal').style.display = 'block'; }
+function openZz() { document.getElementById('zzModal').style.display = 'block'; }
+function openZk() { document.getElementById('zkModal').style.display = 'block'; }
+function openLoan() { closeModal(); document.getElementById('LoanModal').style.display = 'block'; }
+function closeModal() { document.querySelectorAll('.modal').forEach(m => m.style.display = 'none'); }
+function showPwdModal(target) {
+    let pwd = prompt("请输入管理员密码：");
+    if (pwd === ADMIN_PASSWORD) document.getElementById(target).click();
+    else alert("密码错误！");
+}
+function toggleFullscreen(id) {
+    const el = document.getElementById(id);
+    if (el.requestFullscreen) el.requestFullscreen();
+    else if (el.webkitRequestFullscreen) el.webkitRequestFullscreen();
+    else if (el.msRequestFullscreen) el.msRequestFullscreen();
+}
+function editWithPwd(id) {
+    let pwd = prompt("请输入管理员密码：");
+    if (pwd === null) return;
+    if (pwd !== ADMIN_PASSWORD) { alert("密码错误！"); return; }
+    let el = document.getElementById(id);
+    let newText = prompt("修改内容：", el.innerHTML.trim());
+    if (newText !== null && newText !== "") el.innerHTML = newText;
+}
+
+// 页面加载时初始化所有视频
+window.addEventListener('DOMContentLoaded', () => {
+    initAllVideos();
+});
+</script>
+
+<!-- 模态框内容（完整保留） -->
+<div class="modal" id="pgModal"><div class="modal-box"><h4>普通高中国家助学金（完整政策）</h4><p><strong>一、资助对象</strong></p><p>具有正式学籍、家庭经济困难的普通高中在校生</p><p><strong>二、评定条件</strong></p><p>1. 热爱祖国，拥护中国共产党领导</p><p>2. 遵守宪法法律及校纪校规，无违纪记录</p><p>3. 诚实守信，道德品质优良</p><p>4. 勤奋学习，努力上进，学习态度端正</p><p>5. 家庭经济困难，生活简朴，符合广东省家庭经济困难认定标准</p><p><strong>三、评定时间</strong></p><p>秋季：9—10月集中申请认定，为全年主要批次</p><p>春季：仅针对新增家庭经济困难学生动态增补，不开展全面认定</p><p><strong>四、评定流程</strong></p><p>1. 学生向学校提交书面申请及相关证明材料</p><p>2. 班级组织民主评议，班主任完成初审并提出意见</p><p>3. 学校资助评审工作小组进行审核评议</p><p>4. 校内公示（不少于5个工作日），无异议后确定拟资助名单</p><p>5. 报属地教育行政部门审批、备案</p><p>6. 学校按审批结果发放助学金</p><p><strong>五、材料准备</strong></p><p>1. 普通高中国家助学金申请表（学校统一发放）</p><p>2. 学生本人身份证、户口本复印件（原件备查）</p><p>3. 家庭经济困难相关证明材料（低保证、特困人员救助供养证、脱贫家庭证明、残疾证、孤儿证明等）</p><p>4. 学生在校表现证明（班主任签字确认）</p><p><strong>六、资助标准</strong></p><p>分三档发放：1000元/年、2000元/年、3000元/年，根据家庭困难程度分档</p><p><strong>七、注意事项</strong></p><p>1. 需真实提供困难证明，不得弄虚作假、虚报瞒报</p><p>2. 公示期间有异议的，学校须在3个工作日内核查并反馈</p><p>3. 助学金资金直接发放至学生本人银行卡，专款专用</p><button class="close" onclick="closeModal()">关闭</button></div></div>
+<div class="modal" id="zzModal"><div class="modal-box"><h4>中职国家助学金（完整政策）</h4><p><strong>一、资助对象</strong></p><p>全日制中职一、二年级涉农专业学生，或非涉农专业家庭经济困难学生</p><p><strong>二、评定条件</strong></p><p>1. 具有中等职业学校全日制正式学籍，在校正常就读</p><p>2. 遵守学校规章制度，品行良好，无违纪记录</p><p>3. 涉农专业学生直接认定，非涉农专业学生符合家庭经济困难认定标准</p><p>4. 积极参加学校各项教学活动，学业成绩合格</p><p><strong>三、评定时间</strong></p><p>秋季：9—10月集中申请、审核、认定</p><p>春季：3—4月针对新增家庭经济困难学生动态增补</p><p><strong>四、评定流程</strong></p><p>1. 学生向学校资助部门提交申请及相关材料</p><p>2. 班主任结合学生在校表现完成初审</p><p>3. 学校资助评审小组审核，确定拟资助名单</p><p>4. 校内公示（不少于5个工作日），接受师生监督</p><p>5. 公示无异议后，报教育/人社行政部门审批</p><p>6. 审批通过后，学校按月发放助学金</p><p><strong>五、材料准备</strong></p><p>1. 中等职业学校国家助学金申请表</p><p>2. 学生本人身份证、户口本复印件（原件备查）</p><p>3. 家庭经济困难证明材料（低保证、特困证、脱贫证明等，非涉农专业需提供）</p><p>4. 学生学籍证明（学校学籍管理部门出具）</p><p><strong>六、资助标准</strong></p><p>2000元/生/年，按10个月计发，200元/生/月；全日制中职在校生全部享受免学费政策</p><p><strong>七、注意事项</strong></p><p>1. 学籍须在教育部全国中等职业学校学生管理信息系统正常注册</p><p>2. 休学、退学、转学学生暂停发放助学金，恢复学籍后重新审核</p><p>3. 严禁代领、冒领助学金，一经发现取消资助资格并追回资金</p><button class="close" onclick="closeModal()">关闭</button></div></div>
+<div class="modal" id="zkModal"><div class="modal-box"><h4>本专科生国家助学金（最全官方版）</h4><p><strong>一、资助对象</strong></p><p>全日制普通本专科（高职、专科）在校生中家庭经济困难学生</p><p><strong>二、评定条件</strong></p><p>1. 热爱祖国，拥护中国共产党的领导，树立正确的世界观、人生观、价值观</p><p>2. 遵守宪法和法律，遵守学校规章制度，无任何违纪违法记录</p><p>3. 勤奋学习，积极上进，学业成绩合格，无不及格科目</p><p>4. 家庭经济困难，生活简朴，已完成学校家庭经济困难学生认定</p><p>5. 诚实守信，品行端正，积极参与学校公益活动者优先</p><p><strong>三、评定时间</strong></p><p>秋季认定：9—10月（全学年主要认定批次，覆盖全年资助）</p><p>春季增补：3—4月（漏评、新增困难、家庭变故、困难程度加重学生均可申请）</p><p><strong>四、评定流程</strong></p><p>1. 学校发布资助申请通知，学生通过校内资助系统线上提交申请，同时提交纸质材料</p><p>2. 班级成立评议小组，开展民主评议，提出初步评议意见</p><p>3. 学院资助工作小组对班级评议结果进行初审，确定学院拟资助名单</p><p>4. 学院公示（不少于3个工作日），无异议后报学校学生资助管理中心</p><p>5. 学校资助管理中心复核，全校公示（不少于5个工作日）</p><p>6. 公示无异议后，报省级教育行政部门备案，学校发放资助资金</p><p><strong>五、材料准备</strong></p><p>1. 广东省家庭经济困难学生认定申请表（原件）</p><p>2. 学生本人身份证、户口本复印件（原件备查）</p><p>3. 家庭经济困难相关证明材料（低保证、特困人员救助供养证、脱贫家庭监测证明、残疾证、重大疾病诊断书等）</p><p>4. 学生本人银行卡复印件（开户行、卡号、姓名清晰，与身份证一致）</p><p><strong>六、资助标准</strong></p><p>平均3700元/生/年，各高校分2-3档发放，具体档级金额由高校结合实际制定</p><p><strong>七、注意事项</strong></p><p>1. 严禁弄虚作假、虚报困难情况，一经查实取消资助资格，记入学生诚信档案</p><p>2. 资助资金直接发放至学生本人银行卡，仅限用于学习和生活开支，不得挪作他用</p><p>3. 在校期间受到纪律处分的学生，取消当学年助学金评定资格</p><p>4. 助学金按学期发放，每学期发放一次</p><button class="close" onclick="closeModal()">关闭</button></div></div>
+<div class="modal" id="LoanModal"><div class="modal-box"><h4>本专科生国家助学贷款（最全官方版）</h4><p><strong>一、资助对象</strong></p><p>家庭经济困难的全日制普通本专科生、研究生、第二学士学位学生</p><p><strong>二、评定条件</strong></p><p>1. 具有中华人民共和国国籍，且持有中华人民共和国居民身份证</p><p>2. 诚实守信，遵纪守法，无不良信用记录，无违法违纪行为</p><p>3. 家庭经济困难，不足以支付在校期间完成学业所需的学费、住宿费</p><p>4. 入学前户籍在广东省内（生源地助学贷款），或就读于广东省内高校（校园地助学贷款）</p><p>5. 全日制在校学生，学籍状态正常</p><p><strong>三、评定时间</strong></p><p>首次贷款/续贷：每年7月1日—9月30日（暑假期间），开学初期可补办</p><p>校园地助学贷款：按就读高校通知时间办理</p><p><strong>四、评定流程（生源地信用助学贷款）</strong></p><p>首次办理：1.学生登录国家开发银行助学贷款信息网注册申请；2.学生与共同借款人携带材料到户籍所在地教育局学生资助管理中心现场审核、签订合同；3.高校确认学籍后，贷款资金发放至高校学费账户，剩余资金转至学生个人账户</p><p>续贷办理：1.学生线上提交续贷申请；2.无需现场办理，线上审核通过后签订电子合同；3.贷款资金直接发放至高校及学生账户</p><p><strong>五、材料准备</strong></p><p>首次办理：1.学生本人身份证、户口本原件及复印件；2.共同借款人身份证、户口本原件及复印件；3.录取通知书/学生证原件及复印件；4.国家开发银行助学贷款申请表（网上打印）</p><p>续贷办理：1.学生本人身份证原件；2.续贷申请表（网上打印）；3.共同借款人身份证复印件（如信息无变更）</p><p><strong>六、贷款额度与用途（2024年秋季学期起执行新标准）</strong></p><p>贷款额度：本专科生每人每年最高20000元，最低1000元，研究生每人每年最高25000元，最低1000元</p><p>贷款用途：优先用于支付学费和住宿费，超出部分可用于弥补日常生活费。</p><p><strong>七、利息政策</strong></p><p>在校期间：国家全额贴息，学生不支付任何利息</p><p>毕业当年：9月1日起开始自行承担利息，按年计息</p><p>还款宽限期：毕业后5年内为还本宽限期，仅需支付利息，5年后开始偿还本金+利息</p><p><strong>八、注意事项</strong></p><p>1. 贷款必须用于学业相关开支，不得挪作他用，一经发现停止贷款发放</p><p>2. 毕业前必须登录助学贷款系统完成毕业确认，更新个人联系方式、就业信息</p><p>3. 按期足额还款，维护个人征信记录，逾期还款将产生罚息并记入个人信用档案</p><p>4. 升学、转学、休学、退学的学生，须及时到教育局及高校办理贷款变更手续</p><button class="close" onclick="closeModal()">关闭</button></div></div>
+</body>
+</html>
